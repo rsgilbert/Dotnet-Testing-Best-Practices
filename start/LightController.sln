@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightController", "LightController\LightController.csproj", "{C56D5B8C-E426-487B-A175-85C4D62DF7FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightController", "LightController\LightController.csproj", "{C56D5B8C-E426-487B-A175-85C4D62DF7FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightController.Tests", "LightController.Tests\LightController.Tests.csproj", "{DA12160D-35F6-475F-830C-00E0EAE546B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C56D5B8C-E426-487B-A175-85C4D62DF7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C56D5B8C-E426-487B-A175-85C4D62DF7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C56D5B8C-E426-487B-A175-85C4D62DF7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA12160D-35F6-475F-830C-00E0EAE546B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA12160D-35F6-475F-830C-00E0EAE546B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA12160D-35F6-475F-830C-00E0EAE546B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA12160D-35F6-475F-830C-00E0EAE546B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
