@@ -25,19 +25,6 @@ public class LightController
     }
 }
 
-public class LightSwitcherInstance : LightSwitcher.ILightSwitcher
-{
-    public void TurnOff()
-    {
-        Console.WriteLine("Setting lights to off");
-    }
-
-    public void TurnOn()
-    {
-        Console.WriteLine("Setting lights to on");
-    }
-}
-
 public class MotionSensorInstance : IMotionSensor
 {
     private bool motion;
@@ -52,9 +39,9 @@ public class Program
 {
     public static void Main()
     {
-        LightSwitcher.Init(new LightSwitcherInstance());
         IMotionSensor motionSensor = new MotionSensorInstance();
-        ILightActuator lightActuator = new LightActuator();
+        ILightSwitcher lightSwitcher = new LightSwitcher();
+        ILightActuator lightActuator = new LightActuator(lightSwitcher);
         LightController controller = new LightController(motionSensor, lightActuator);
         while(true)
         {

@@ -5,27 +5,24 @@
 
 namespace LightController;
 
-// Static class to turn lights on & off
-public static class LightSwitcher
+public interface ILightSwitcher
 {
-    public interface ILightSwitcher
-    {
-        void TurnOn();
+    void TurnOn();
 
-        void TurnOff();
+    void TurnOff();
+}
+
+
+public  class LightSwitcher : ILightSwitcher
+{
+    public void TurnOff()
+    {
+        Console.WriteLine("Turning off switch");
     }
 
-    private static ILightSwitcher? _instance;
-
-    public static ILightSwitcher Instance { get => _instance ?? throw new Exception("LightSwitcher not initialized"); }
-
-    public static void Init(ILightSwitcher instance)
+    public void TurnOn()
     {
-        if (_instance != null)
-        {
-            throw new Exception("Already initialized");
-        }
-        _instance = instance;
+        Console.WriteLine("Turning on switch");
     }
 }
 
@@ -39,9 +36,10 @@ public interface ILightActuator
     void ActuateLights(bool motionDetected);
 }
 
-public class LightActuator : ILightActuator
+public class LightActuator(ILightSwitcher lightSwitcher) : ILightActuator
 {
-    private DateTime LastMotionTime { get; set; }
+    // public for testing. Not part of interface
+    public DateTime LastMotionTime { get; set; }
 
     public void ActuateLights(bool motionDetected)
     {
@@ -57,12 +55,12 @@ public class LightActuator : ILightActuator
         string timePeriod = GetTimePeriod(time);
         if (motionDetected && (timePeriod == "Evening" || timePeriod == "Night"))
         {
-            LightSwitcher.Instance.TurnOn();
+            lightSwitcher.TurnOn();
         }
         // If no motion is detected for one minute, or if it is morning or day, turn the light off.
         else if (time.Subtract(LastMotionTime) > TimeSpan.FromMinutes(1) || (timePeriod == "Morning" || timePeriod == "Noon"))
         {
-            LightSwitcher.Instance.TurnOff();
+            lightSwitcher.TurnOff();
         }
     }
 
