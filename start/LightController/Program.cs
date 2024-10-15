@@ -1,4 +1,7 @@
-﻿namespace LightController;
+﻿using System.Security.Authentication.ExtendedProtection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LightController;
 
 public class LightController
 {
@@ -39,10 +42,15 @@ public class Program
 {
     public static void Main()
     {
-        IMotionSensor motionSensor = new MotionSensorInstance();
-        ILightSwitcher lightSwitcher = new LightSwitcher();
-        ILightActuator lightActuator = new LightActuator(lightSwitcher);
-        LightController controller = new LightController(motionSensor, lightActuator);
+        var services = new ServiceCollection();
+        services.AddSingleton<IMotionSensor, MotionSensorInstance>();
+        services.AddSingleton<ILightSwitcher, LightSwitcher>();
+        services.AddSingleton<ILightActuator, LightActuator>();
+        services.AddSingleton<LightController, LightController>();
+        services.AddSingleton<ITimePeriodHelper, TimePeriodHelper>();
+
+        var app = services.BuildServiceProvider();
+        LightController controller = app.GetRequiredService<LightController>();
         while(true)
         {
             Thread.Sleep(100);

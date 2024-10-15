@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
+using Moq.AutoMock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,63 @@ namespace LightController.Tests;
 
 public class LightActuator_ActuateLights_Tests
 {
-    [Fact]
-    public void MotionDetected_SetCurrentDate()
+    [Theory]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    public void MotionDetected_SetCurrentDate(bool motionDetected, bool shouldSetCurrentDate)
     {
         // Arrange
-        bool motionDetected = true;
-        DateTime startTime = new DateTime(2000, 1, 1); // not now
+        DateTime startTime = new(2000, 1, 1); // not now
         Mock<ILightSwitcher> lightSwitcherMock = new Mock<ILightSwitcher>();
+        var ioc = new AutoMocker();
 
         // Act
-        LightActuator lightActuator = new(lightSwitcherMock.Object);
+        LightActuator lightActuator = ioc.CreateInstance<LightActuator>();
+        lightActuator.LastMotionTime = startTime;
         lightActuator.ActuateLights(motionDetected);
         DateTime lastMotionTime = lightActuator.LastMotionTime;
 
 
         // Assert
-        lastMotionTime.Should().NotBe(startTime);
+        if (shouldSetCurrentDate)
+        {
+            lastMotionTime.Should().NotBe(startTime);
+        }
+        else
+        {
+            lastMotionTime.Should().Be(startTime);
+        }
     }
-    public void MotionNotDetected_DonotSetCurrentDate()
-    {
-        throw new NotImplementedException();
-    }
+   
 
-
+    
     [Theory]
     [InlineData("Morning", false)]
     [InlineData("Afternoon", false)]
     [InlineData("Evening", true)]
     [InlineData("Night", true)]
-    public void MotionDetectedAndNight_TurnOn(string timePeriod, bool expected)
+    public void MotionDetectedAndNight_TurnOn(string timePeriod, bool expectedTurnOn)
     {
-        throw new NotImplementedException();
-            
+        // Arrange
+        bool actualTurnOn= false;
+        bool motionDetected = true;
+        DateTime startTime = new DateTime(2000, 1, 1); // not now
+        var ioc = new AutoMocker();
+        Mock<ILightSwitcher> lightSwitcherMock = ioc.GetMock<ILightSwitcher>();
+        lightSwitcherMock.Setup(m => m.TurnOn()).Callback(() =>
+        {
+            actualTurnOn = true;
+        });
+        Mock<ITimePeriodHelper> timePeriodMock = ioc.GetMock<ITimePeriodHelper>();
+        timePeriodMock.Setup(m => m.GetTimePeriod(It.IsAny<DateTime>())).Returns(timePeriod);
+        // Act
+        LightActuator lightActuator = ioc.CreateInstance<LightActuator>();
+        lightActuator.ActuateLights(motionDetected);
+
+
+        // Assert
+        actualTurnOn.Should().Be(expectedTurnOn);
+
     }
 
     [Theory]
@@ -49,9 +75,28 @@ public class LightActuator_ActuateLights_Tests
     [InlineData("Afternoon", true)]
     [InlineData("Evening", false)]
     [InlineData("Night", false)]
-    public void MotionNotDetectedAndNight_TurnOff(string timePeriod, bool expected)
+    public void MotionNotDetectedAndDay_TurnOff(string timePeriod, bool expectedTurnOff)
     {
-        throw new NotImplementedException();
+        // Arrange
+        bool actualTurnOff = false;
+        bool motionDetected = false;
+        DateTime startTime = DateTime.Now.Subtract(TimeSpan.FromSeconds(1)); // 1 second ago
+        var ioc = new AutoMocker();
+        Mock<ILightSwitcher> lightSwitcherMock = ioc.GetMock<ILightSwitcher>();
+        lightSwitcherMock.Setup(m => m.TurnOff()).Callback(() =>
+        {
+            actualTurnOff = true;
+        });
+        Mock<ITimePeriodHelper> timePeriodMock = ioc.GetMock<ITimePeriodHelper>();
+        timePeriodMock.Setup(m => m.GetTimePeriod(It.IsAny<DateTime>())).Returns(timePeriod);
+        // Act
+        LightActuator lightActuator = ioc.CreateInstance<LightActuator>();
+        lightActuator.LastMotionTime = startTime;
+        lightActuator.ActuateLights(motionDetected);
+
+
+        // Assert
+        actualTurnOff.Should().Be(expectedTurnOff);
 
     }
 
