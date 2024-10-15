@@ -52,13 +52,13 @@ public class LightActuator(ILightSwitcher lightSwitcher, ITimePeriodHelper timeP
         }
 
         // If motion was detected in the evening or at night, turn the light on.
-        string timePeriod = timePeriodHelper.GetTimePeriod(time);
-        if (motionDetected && (timePeriod == "Evening" || timePeriod == "Night"))
+        TimePeriod timePeriod = timePeriodHelper.GetTimePeriod(time);
+        if (motionDetected && (timePeriod == TimePeriod.Evening || timePeriod == TimePeriod.Night))
         {
             lightSwitcher.TurnOn();
         }
         // If no motion is detected for one minute, or if it is morning or day, turn the light off.
-        else if (time.Subtract(LastMotionTime) > TimeSpan.FromMinutes(1) || (timePeriod == "Morning" || timePeriod == "Afternoon"))
+        else if (time.Subtract(LastMotionTime) > TimeSpan.FromMinutes(1) || (timePeriod == TimePeriod.Morning || timePeriod == TimePeriod.Afternoon))
         {
             lightSwitcher.TurnOff();
         }
@@ -68,20 +68,20 @@ public class LightActuator(ILightSwitcher lightSwitcher, ITimePeriodHelper timeP
 public class TimePeriodHelper : ITimePeriodHelper
 {
 
-    public string GetTimePeriod(DateTime dateTime)
+    public TimePeriod GetTimePeriod(DateTime dateTime)
     {
         if (dateTime.Hour >= 0 && dateTime.Hour < 6)
         {
-            return "Night";
+            return TimePeriod.Night;
         }
         if (dateTime.Hour >= 6 && dateTime.Hour < 12)
         {
-            return "Morning";
+            return TimePeriod.Morning;
         }
         if (dateTime.Hour >= 12 && dateTime.Hour < 18)
         {
-            return "Afternoon";
+            return TimePeriod.Afternoon;
         }
-        return "Evening";
+        return TimePeriod.Evening;
     }
 }

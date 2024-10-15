@@ -42,11 +42,11 @@ public class LightActuator_ActuateLights_Tests
 
     
     [Theory]
-    [InlineData("Morning", false)]
-    [InlineData("Afternoon", false)]
-    [InlineData("Evening", true)]
-    [InlineData("Night", true)]
-    public void MotionDetectedAndNight_TurnOn(string timePeriod, bool expectedTurnOn)
+    [InlineData(TimePeriod.Morning, false)]
+    [InlineData(TimePeriod.Afternoon, false)]
+    [InlineData(TimePeriod.Evening, true)]
+    [InlineData(TimePeriod.Night, true)]
+    public void MotionDetectedAndNight_TurnOn(TimePeriod timePeriod, bool expectedTurnOn)
     {
         // Arrange
         bool actualTurnOn= false;
@@ -71,11 +71,11 @@ public class LightActuator_ActuateLights_Tests
     }
 
     [Theory]
-    [InlineData("Morning", true)]
-    [InlineData("Afternoon", true)]
-    [InlineData("Evening", false)]
-    [InlineData("Night", false)]
-    public void MotionNotDetectedAndDay_TurnOff(string timePeriod, bool expectedTurnOff)
+    [InlineData(TimePeriod.Morning, true)]
+    [InlineData(TimePeriod.Afternoon, true)]
+    [InlineData(TimePeriod.Evening, false)]
+    [InlineData(TimePeriod.Night, false)]
+    public void MotionNotDetectedAndDay_TurnOff(TimePeriod timePeriod, bool expectedTurnOff)
     {
         // Arrange
         bool actualTurnOff = false;

@@ -8,5 +8,5 @@ namespace LightController;
 
 public interface ITimePeriodHelper
 {
-    string GetTimePeriod(DateTime dateTime);
+    TimePeriod GetTimePeriod(DateTime dateTime);
 }
